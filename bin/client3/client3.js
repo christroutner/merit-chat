@@ -7,7 +7,7 @@ const MASTER_MULTIADDR = '/ip4/127.0.0.1/tcp/5004/p2p/'
 const MASTER_IPFS_ID = 'Qma7XadmQ2LwVi6jkFtZJEBxDaNQwbyjj1TBQiUGxjeKrR'
 const ROOM_NAME = 'room-name'
 const MNEMONIC =
-  'creek caution crouch bid route gold prepare need above movie broom denial'
+  'firm industry neither peanut rail ticket slogan address lady friend sell velvet'
 
 // Global npm libraries
 const Room = require('ipfs-pubsub-room')
@@ -34,9 +34,9 @@ const ipfsOptions = {
   },
   config: {
     Addresses: {
-      Swarm: ['/ip4/0.0.0.0/tcp/5104', '/ip4/190.198.70.169/tcp/5105/ws'],
-      API: '/ip4/127.0.0.1/tcp/5106',
-      Gateway: '/ip4/127.0.0.1/tcp/5107',
+      Swarm: ['/ip4/0.0.0.0/tcp/5304', '/ip4/190.198.70.169/tcp/5305/ws'],
+      API: '/ip4/127.0.0.1/tcp/5306',
+      Gateway: '/ip4/127.0.0.1/tcp/5307',
       Delegates: []
     }
   },
