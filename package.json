@@ -12,7 +12,8 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "coverage:report": "nyc --reporter=html mocha test/unit/ --exit",
     "master": "cd bin/master && node master.js",
-    "client1": "cd bin/client1 && node client1.js"
+    "client1": "cd bin/client1 && node client1.js",
+    "client2": "cd bin/client2 && node client2.js"
   },
   "keywords": [
     "bitcoin",
