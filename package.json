@@ -4,13 +4,15 @@
   "description": "Chat example between IPFS nodes using BCH e2e encryption and token merit.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "npm run master",
     "test": "TEST=unit nyc mocha test/unit/",
     "test:integration": "mocha --timeout 25000 test/integration/",
     "lint": "standard --env mocha --fix",
     "docs": "./node_modules/.bin/apidoc -i src/ -o docs",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "coverage:report": "nyc --reporter=html mocha test/unit/ --exit"
+    "coverage:report": "nyc --reporter=html mocha test/unit/ --exit",
+    "master": "cd bin/master && node master.js",
+    "client1": "cd bin/client1 && node client1.js"
   },
   "keywords": [
     "bitcoin",
@@ -36,7 +38,8 @@
     "@psf/bch-js": "^3.5.3",
     "apidoc": "^0.23.0",
     "ipfs": "^0.50.1",
-    "ipfs-pubsub-room": "^2.0.1"
+    "ipfs-pubsub-room": "^2.0.1",
+    "minimal-slp-wallet": "^1.4.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",

@@ -2,11 +2,20 @@
   A 'client' node
 */
 
-const MASTER_MULTIADDR = '/ip4/127.0.0.1/tcp/5004/p2p/QmZqyq4ZAmmHGyV6XSJLV8vjiEKbwLrAgd46BdraL6wPqu'
+// Change these constants to fit your environment.
+const MASTER_MULTIADDR = '/ip4/127.0.0.1/tcp/5004/p2p/Qma7XadmQ2LwVi6jkFtZJEBxDaNQwbyjj1TBQiUGxjeKrR'
 const ROOM_NAME = 'room-name'
+const MNEMONIC =
+  'creek caution crouch bid route gold prepare need above movie broom denial'
 
+// Global npm libraries
 const Room = require('ipfs-pubsub-room')
 const IPFS = require('ipfs')
+
+// Local libraries
+const Signing = require('../../lib/signing')
+const Messages = require('../../lib/messages')
+let msgLib
 
 // Ipfs Options
 const ipfsOptions = {
@@ -37,27 +46,61 @@ async function startClientNode () {
     // Starting ipfs node
     console.log('Starting...')
     const ipfs = await IPFS.create(ipfsOptions)
-    console.log('... IPFS is ready.')
+    console.log('... IPFS is ready.\n')
 
+    // Connect to the master node.
     await ipfs.swarm.connect(MASTER_MULTIADDR)
-    console.log(`Connected to ${MASTER_MULTIADDR}`)
+    console.log(`Connected to ${MASTER_MULTIADDR}\n`)
 
+    // Create a BCH wallet
+    const wallet = new Signing(MNEMONIC)
+    await wallet.isReady // Wait for wallet to initialize.
+
+    // Get the IPFS ID for this node.
+    let ipfsId = await ipfs.config.get('Identity')
+    ipfsId = ipfsId.PeerID
+
+    // Initialize the Message library.
+    const msgConfig = {
+      ipfsId,
+      bchAddr: wallet.bchAddr,
+      slpAddr: wallet.slpAddr,
+      publicKey: wallet.publicKey
+    }
+    // console.log(`msgConfig: ${JSON.stringify(msgConfig, null, 2)}`)
+
+    // Create an announcement message
+    msgLib = new Messages(msgConfig)
+
+    // Join the pubsub room.
     const room = new Room(ipfs, 'room-name')
 
-    room.on('peer joined', peer => {
-      console.log('Peer joined the room', peer)
-    })
+    // Set up the pubsub room event router.
+    eventRouter(room)
 
-    room.on('peer left', peer => {
-      console.log('Peer left...', peer)
-    })
-
-    // now started to listen to room
-    room.on('subscribed', () => {
-      console.log('Now connected!')
-    })
+    room.broadcast(msgLib.announce())
   } catch (err) {
     console.error('Error: ', err)
   }
 }
 startClientNode()
+
+// A router for handling pubsub events.
+function eventRouter (room) {
+  room.on('peer joined', async peer => {
+    console.log('Peer joined the room:', peer)
+  })
+
+  room.on('peer left', peer => {
+    console.log('Peer left...', peer)
+  })
+
+  // now started to listen to room
+  room.on('subscribed', () => {
+    console.log('Now connected!')
+  })
+
+  room.on('message', (message) => {
+    console.log(`${message.from}: ${message.data}`)
+  })
+}

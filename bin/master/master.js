@@ -34,12 +34,12 @@ async function startMasterNode () {
     // Starting ipfs node
     console.log('Starting...')
     const ipfs = await IPFS.create(ipfsOptions)
-    console.log('... IPFS is ready.')
+    console.log('... IPFS is ready.\n')
 
     const room = new Room(ipfs, 'room-name')
 
     room.on('peer joined', peer => {
-      console.log('Peer joined the room', peer)
+      console.log('Peer joined the room:', peer)
     })
 
     room.on('peer left', peer => {
@@ -49,6 +49,10 @@ async function startMasterNode () {
     // now started to listen to room
     room.on('subscribed', () => {
       console.log('Now connected!')
+    })
+
+    room.on('message', (message) => {
+      console.log(`${message.from}: ${message.data}`)
     })
   } catch (err) {
     console.error('Error: ', err)
